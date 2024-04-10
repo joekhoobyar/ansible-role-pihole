@@ -1,0 +1,10 @@
+- import_tasks: install-cloudflared.yml
+  tags: cloudflared-install
+
+- import_tasks: config-installer.yml
+  tags: pihole-install
+- import_tasks: install-pihole.yml
+  tags: pihole-install
+
+- import_tasks: config-server.yml
+  tags: pihole-config

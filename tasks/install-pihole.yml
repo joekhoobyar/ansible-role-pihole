@@ -1,0 +1,9 @@
+- name: pihole - stat /usr/local/bin/pihole
+  stat:
+    path: /usr/local/bin/pihole
+  register: bin_pihole
+- name: install pihole
+  shell:
+    cmd: curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended
+  when: not(bin_pihole.stat.exists | default(false))
+  

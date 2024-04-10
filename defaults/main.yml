@@ -1,0 +1,20 @@
+# pihole_interface: eth0
+pihole_query_logging: true
+pihole_install_web_server: true
+pihole_install_web_interface: true
+pihole_lighttpd_enabled: true
+pihole_cache_size: 10000
+pihole_dns_fqdn_required: true
+pihole_dns_bogus_priv: true
+#pihole_dnsmasq_listening: bind
+#pihole_web_password
+pihole_blocking_enabled: true
+pihole_dnssec: false
+pihole_rev_server: false
+#pihole_rev_server_cidr: 10.0.0.0/8
+#pihole_rev_server_target: 10.2.3.4
+#pihole_rev_server_domain: mynetwork.lan
+pihole_webuiboxedlayout: boxed
+pihole_webtheme: default-auto
+#pihole_dns:
+#- 8.8.8.8

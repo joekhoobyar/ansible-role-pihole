@@ -1,0 +1,70 @@
+# Install the GPG key when missing.
+- name: cloudflared - stat /usr/share/keyrings/cloudflare-main.gpg
+  stat:
+    path: /usr/share/keyrings/cloudflare-main.gpg
+  register: cloudflare_gpg
+- name: cloudflared - mkdir /usr/share/keyrings
+  file:
+    state: directory
+    path: /usr/share/keyrings
+    owner: root
+    group: root
+    mode: 0755
+  when: not(etc_cloudflared.stat.exists | default(false)) # Avoid changing perms from what the OS sets
+- name: cloudflared - download gpg key
+  shell:
+    cmd: curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg >/usr/share/keyrings/cloudflare-main.gpg
+  when: not(cloudflare_gpg.stat.exists | default(false))
+
+# Configure the APT repo.
+- name: cloudflared - configure apt repo
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared {{ ansible_distribution_release }} main"
+    state: present
+
+# Install cloudflared
+- name: cloudflared - install
+  apt:
+    package: cloudflared
+    update_cache: yes
+    state: latest
+
+# Configure the user / group
+- name: cloudflared - configure group
+  group:
+    name: cloudflared
+    system: yes
+- name: cloudflared - configure user
+  user:
+    name: cloudflared
+    group: cloudflared
+    system: yes
+    shell: /usr/sbin/nologin
+    create_home: false
+
+# Configure the daemon
+- name: cloudflared - /etc/default/cloudflared
+  template:
+    src: cloudflared-default.j2
+    dest: /etc/default/cloudflared
+    owner: cloudflared
+    group: cloudflared
+    mode: 0644
+  notify:
+  - restart cloudflared
+
+# Install and enable the daemon
+- name: cloudflared - /etc/systemd/system/cloudflared.service
+  template:
+    src: cloudflared.service.j2
+    dest: /etc/systemd/system/cloudflared.service
+    owner: cloudflared
+    group: cloudflared
+    mode: 0644
+  notify:
+  - restart cloudflared
+- name: cloudflared service
+  systemd_service:
+    name: cloudflared
+    enabled: yes
+    state: started

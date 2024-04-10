@@ -1,0 +1,24 @@
+PIHOLE_INTERFACE={{ pihole_interface | default(ansible_default_ipv4.interface) }}
+QUERY_LOGGING={{ 'true' if pihole_query_logging else 'false' }}
+INSTALL_WEB_SERVER={{ 'true' if pihole_install_web_server else 'false' }}
+INSTALL_WEB_INTERFACE={{ 'true' if pihole_install_web_interface else 'false' }}
+LIGHTTPD_ENABLED={{ 'true' if pihole_lighttpd_enabled else 'false' }}
+CACHE_SIZE={{ pihole_cache_size }}
+DNS_FQDN_REQUIRED={{ 'true' if pihole_dns_fqdn_required else 'false' }}
+DNS_BOGUS_PRIV={{ 'true' if pihole_dns_bogus_priv else 'false' }}
+{% if pihole_dnsmasq_listening is defined %}DNSMASQ_LISTENING={{ pihole_dnsmasq_listening }}
+{% endif %}
+{% if pihole_web_password is defined %}WEBPASSWORD={{ pihole_web_password }}
+{% endif %}
+BLOCKING_ENABLED={{ 'true' if pihole_blocking_enabled else 'false' }}
+DNSSEC={{ 'true' if pihole_dnssec else 'false' }}
+REV_SERVER={{ 'true' if (pihole_rev_server | default(false)) else 'false' }}
+{% if (pihole_rev_server | default(false)) %}REV_SERVER_CIDR={{ pihole_rev_server_cidr }}
+REV_SERVER_TARGET={{ pihole_rev_server_target }}
+REV_SERVER_DOMAIN={{ pihole_rev_server_domain }}
+{% endif %}
+WEBUIBOXEDLAYOUT={{ pihole_webuiboxedlayout }}
+WEBTHEME={{ pihole_webtheme }}
+{% for item in pihole_dns %}
+PIHOLE_DNS_{{ loop.index }}={{ item }}
+{% endfor %}

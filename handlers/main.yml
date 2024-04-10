@@ -1,0 +1,10 @@
+- name: pihole restartdns
+  shell:
+    cmd: pihole restartdns
+- name: pihole restartdns reload
+  shell:
+    cmd: pihole restartdns reload
+- name: restart cloudflared
+  service:
+    name: cloudflared
+    state: restarted
